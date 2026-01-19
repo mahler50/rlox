@@ -1,3 +1,5 @@
+use unescape::unescape;
+
 use crate::ast::expr::Expr;
 use crate::error::{RloxError, report};
 use crate::token::{LiteralType, Token, TokenType};
@@ -140,12 +142,28 @@ impl Parser {
                 })
             }
             TokenType::String => {
-                // TODO: handle escape characters.
                 let lexeme = self.peek().lexeme.clone();
-                self.advance();
-                Ok(Expr::Literal {
-                    value: LiteralType::String(lexeme),
-                })
+                let lexeme = lexeme[1..lexeme.len() - 1].to_string();
+                match unescape(&lexeme) {
+                    Some(unescaped) => {
+                        self.advance();
+                        Ok(Expr::Literal {
+                            value: LiteralType::String(unescaped),
+                        })
+                    }
+                    None => {
+                        report(&RloxError::LexicalError(
+                            self.peek().line,
+                            "Invalid escape string sequence".to_string(),
+                            lexeme.clone(),
+                        ));
+                        self.advance();
+                        self.had_error = true;
+                        Ok(Expr::Literal {
+                            value: LiteralType::String(lexeme),
+                        })
+                    }
+                }
             }
             TokenType::LeftParen => {
                 self.advance();

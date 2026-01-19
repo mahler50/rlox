@@ -10,6 +10,7 @@ fn preprae_test_case() -> Vec<(&'static str, &'static str)> {
             "(-1 + 2) * 3 == 6 / 2 == true != false != nil",
             "(!= (!= (== (== (* (group (+ (- 1) 2)) 3) (/ 6 2)) true) false) nil)",
         ),
+        ("\"hello\" + \"lox\"", "(+ hello lox)"),
     ]
 }
 
