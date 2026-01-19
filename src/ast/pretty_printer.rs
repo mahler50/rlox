@@ -3,7 +3,7 @@ use crate::{
     token::LiteralType,
 };
 
-pub struct AstPrinter {}
+pub struct AstPrinter();
 
 impl AstPrinter {
     /// Format a given `Expr` to a readable string.

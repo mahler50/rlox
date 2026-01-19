@@ -19,7 +19,7 @@ fn test_pretty_printer() {
             }),
         }),
     };
-    let mut printer = AstPrinter {};
+    let mut printer = AstPrinter();
 
     assert_eq!("(* (- 123) (group 45.67))", printer.fmt(&expr));
 }

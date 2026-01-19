@@ -7,10 +7,12 @@ use std::{
 pub enum RloxError {
     /// Convert from std::io::Error.
     IOError(io::Error),
-    /// Lexical error durning scanning tokens.
+    /// Lexical error during scanning tokens.
     LexicalError(usize, String, String),
-    /// Error durning scanning tokens.
+    /// Error during scanning tokens.
     ScannerError,
+    /// Syntax error during parsing.
+    SyntaxError(usize, String, String),
 }
 
 impl From<io::Error> for RloxError {
@@ -28,6 +30,10 @@ impl fmt::Display for RloxError {
                 "Lexical Error: [line: {line}, near: {near}, message: {message}].",
             ),
             RloxError::ScannerError => write!(f, "Scanner Error."),
+            RloxError::SyntaxError(line, near, message) => write!(
+                f,
+                "Syntax Error: [line: {line}, near: {near}, message: {message}]."
+            ),
         }
     }
 }

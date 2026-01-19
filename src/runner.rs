@@ -2,6 +2,7 @@ use std::fs;
 use std::io;
 
 use crate::error::RloxError;
+use crate::parser::Parser;
 use crate::scanner::Scanner;
 
 /// Run lox from source file.
@@ -28,9 +29,9 @@ pub fn run_prompt() -> Result<(), RloxError> {
 fn run(source: &str) -> Result<(), RloxError> {
     let mut scanner = Scanner::new(source.to_owned());
     let tokens = scanner.scan_tokens()?;
-
-    for token in tokens {
-        println!("{token:?}");
+    let mut parser = Parser::new(tokens);
+    if let Some(program) = parser.parse() {
+        println!("{:?}", program);
     }
 
     Ok(())
