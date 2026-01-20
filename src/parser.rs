@@ -28,7 +28,24 @@ impl Parser {
 /// Methods for parsing tokens.
 impl Parser {
     fn expression(&mut self) -> Result<Expr, RloxError> {
-        self.equality()
+        self.ternary()
+    }
+
+    fn ternary(&mut self) -> Result<Expr, RloxError> {
+        let mut expr = self.equality()?;
+
+        while self.matches(&[TokenType::QuestionMark]) {
+            let expr1 = self.expression()?;
+            self.consume(TokenType::Colon, "Expect ':' after '?' in ternary operator")?;
+            let expr2 = self.expression()?;
+            expr = Expr::Ternary {
+                condition: Box::new(expr),
+                expr1: Box::new(expr1),
+                expr2: Box::new(expr2),
+            };
+        }
+
+        Ok(expr)
     }
 
     fn equality(&mut self) -> Result<Expr, RloxError> {

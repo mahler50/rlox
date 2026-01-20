@@ -140,3 +140,25 @@ fn test_complex_expression() {
         ]
     );
 }
+
+#[test]
+fn test_ternary_operator() {
+    let tokens = scan("var c = a == b ? 1 : 2");
+    let token_types: Vec<TokenType> = tokens.iter().map(|t| t.token_type).collect();
+    assert_eq!(
+        token_types,
+        vec![
+            TokenType::Var,
+            TokenType::Identifier,
+            TokenType::Equal,
+            TokenType::Identifier,
+            TokenType::EqualEqual,
+            TokenType::Identifier,
+            TokenType::QuestionMark,
+            TokenType::Number,
+            TokenType::Colon,
+            TokenType::Number,
+            TokenType::Eof
+        ]
+    );
+}

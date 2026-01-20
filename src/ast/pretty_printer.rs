@@ -52,4 +52,8 @@ impl expr::Visitor<String> for AstPrinter {
     fn visit_unary(&mut self, operator: &crate::token::Token, right: &expr::Expr) -> String {
         self.parenthesize(&operator.lexeme, vec![right])
     }
+
+    fn visit_ternary(&mut self, condition: &Expr, expr1: &Expr, expr2: &Expr) -> String {
+        self.parenthesize("?", vec![condition, expr1, expr2])
+    }
 }

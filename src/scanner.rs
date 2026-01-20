@@ -100,6 +100,10 @@ impl Scanner {
             b'>' if self.r#match(b'=') => self.add_token(TokenType::GreaterEqual, LiteralType::Nil),
             b'>' => self.add_token(TokenType::Greater, LiteralType::Nil),
 
+            // Ternary.
+            b'?' => self.add_token(TokenType::QuestionMark, LiteralType::Nil),
+            b':' => self.add_token(TokenType::Colon, LiteralType::Nil),
+
             // Slash or comment.
             b'/' => {
                 if self.r#match(b'/') {

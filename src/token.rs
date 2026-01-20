@@ -23,6 +23,10 @@ pub enum TokenType {
     Less,
     LessEqual,
 
+    // Ternary
+    QuestionMark,
+    Colon,
+
     // Literals.
     Identifier,
     String,
