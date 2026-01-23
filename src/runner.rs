@@ -2,6 +2,7 @@ use std::fs;
 use std::io;
 
 use crate::error::RloxError;
+use crate::interpreter::Interpreter;
 use crate::parser::Parser;
 use crate::scanner::Scanner;
 
@@ -30,8 +31,14 @@ fn run(source: &str) -> Result<(), RloxError> {
     let mut scanner = Scanner::new(source.to_owned());
     let tokens = scanner.scan_tokens()?;
     let mut parser = Parser::new(tokens);
-    if let Some(program) = parser.parse() {
-        println!("{:?}", program);
+    match parser.parse() {
+        Some(program) if !parser.had_error => {
+            let mut interpreter = Interpreter::new();
+            if let Some(value) = interpreter.inperpret(program) {
+                println!("{}", value);
+            }
+        }
+        _ => {}
     }
 
     Ok(())

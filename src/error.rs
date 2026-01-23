@@ -13,6 +13,8 @@ pub enum RloxError {
     ScannerError,
     /// Syntax error during parsing.
     SyntaxError(usize, String, String),
+    /// Runtime error.
+    RuntimeError(String),
 }
 
 impl From<io::Error> for RloxError {
@@ -34,6 +36,7 @@ impl fmt::Display for RloxError {
                 f,
                 "Syntax Error: [line: {line}, near: {near}, message: {message}]."
             ),
+            RloxError::RuntimeError(message) => write!(f, "Runtime error: {}", message),
         }
     }
 }
