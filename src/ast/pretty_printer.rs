@@ -53,7 +53,7 @@ impl expr::Visitor<String> for AstPrinter {
         self.parenthesize(&operator.lexeme, vec![right])
     }
 
-    fn visit_ternary(&mut self, condition: &Expr, expr1: &Expr, expr2: &Expr) -> String {
-        self.parenthesize("?", vec![condition, expr1, expr2])
+    fn visit_ternary(&mut self, condition: &Expr, truepart: &Expr, falsepart: &Expr) -> String {
+        self.parenthesize("?", vec![condition, truepart, falsepart])
     }
 }

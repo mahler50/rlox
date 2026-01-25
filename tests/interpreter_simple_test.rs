@@ -35,6 +35,10 @@ fn test_cases() -> Vec<(&'static str, LoxValue)> {
         // ternary
         ("1 < 2 ? 1 : 2", LoxValue::Number(1.0)),
         ("1 > 2 ? 1 : 2", LoxValue::Number(2.0)),
+        // Lox is a dynamic type language, so it's ternary expression can return union type value.
+        // In the following situation, the return type of ternary operator is `number | string`.
+        ("1 < 2 ? 1 : \"abc\"", LoxValue::Number(1.0)),
+        ("1 > 2 ? 1 : \"abc\"", LoxValue::String("abc".to_owned())),
         // grouping
         ("!(1 > 2)", LoxValue::Bool(!(1 > 2))),
         ("-((1 + 2) * 3)", LoxValue::Number(-((1.0 + 2.0) * 3.0))),

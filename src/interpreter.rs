@@ -138,16 +138,16 @@ impl Visitor<Result<LoxValue, RloxError>> for Interpreter {
     fn visit_ternary(
         &mut self,
         condition: &Expr,
-        expr1: &Expr,
-        expr2: &Expr,
+        truepart: &Expr,
+        falsepart: &Expr,
     ) -> Result<LoxValue, RloxError> {
         let condition = condition.accept(self)?;
         match condition {
             LoxValue::Bool(b) => {
                 if b {
-                    expr1.accept(self)
+                    truepart.accept(self)
                 } else {
-                    expr2.accept(self)
+                    falsepart.accept(self)
                 }
             }
             _ => Err(RloxError::RuntimeError(

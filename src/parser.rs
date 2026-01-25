@@ -35,13 +35,13 @@ impl Parser {
         let mut expr = self.equality()?;
 
         while self.matches(&[TokenType::QuestionMark]) {
-            let expr1 = self.expression()?;
+            let truepart = self.expression()?;
             self.consume(TokenType::Colon, "Expect ':' after '?' in ternary operator")?;
-            let expr2 = self.expression()?;
+            let falsepart = self.expression()?;
             expr = Expr::Ternary {
                 condition: Box::new(expr),
-                expr1: Box::new(expr1),
-                expr2: Box::new(expr2),
+                truepart: Box::new(truepart),
+                falsepart: Box::new(falsepart),
             };
         }
 

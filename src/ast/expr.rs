@@ -20,8 +20,8 @@ pub enum Expr {
     },
     Ternary {
         condition: Box<Expr>,
-        expr1: Box<Expr>,
-        expr2: Box<Expr>,
+        truepart: Box<Expr>,
+        falsepart: Box<Expr>,
     },
 }
 
@@ -30,7 +30,7 @@ pub trait Visitor<T> {
     fn visit_grouping(&mut self, expression: &Expr) -> T;
     fn visit_literal(&mut self, value: &LiteralType) -> T;
     fn visit_unary(&mut self, operator: &Token, right: &Expr) -> T;
-    fn visit_ternary(&mut self, condition: &Expr, expr1: &Expr, expr2: &Expr) -> T;
+    fn visit_ternary(&mut self, condition: &Expr, truepart: &Expr, falsepart: &Expr) -> T;
 }
 
 impl Expr {
@@ -49,9 +49,9 @@ impl Expr {
             Expr::Unary { operator, right } => visitor.visit_unary(operator, right),
             Expr::Ternary {
                 condition,
-                expr1,
-                expr2,
-            } => visitor.visit_ternary(condition, expr1, expr2),
+                truepart,
+                falsepart,
+            } => visitor.visit_ternary(condition, truepart, falsepart),
         }
     }
 }

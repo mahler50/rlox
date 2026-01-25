@@ -36,7 +36,7 @@ fn test_ternary_operator() {
                 value: LiteralType::Number(2.0),
             }),
         }),
-        expr1: Box::new(Expr::Binary {
+        truepart: Box::new(Expr::Binary {
             left: Box::new(Expr::Literal {
                 value: LiteralType::Number(1.0),
             }),
@@ -45,7 +45,7 @@ fn test_ternary_operator() {
                 value: LiteralType::Number(2.0),
             }),
         }),
-        expr2: Box::new(Expr::Binary {
+        falsepart: Box::new(Expr::Binary {
             left: Box::new(Expr::Literal {
                 value: LiteralType::Number(3.0),
             }),
