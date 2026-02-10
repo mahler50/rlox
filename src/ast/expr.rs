@@ -3,6 +3,10 @@ use crate::token::{LiteralType, Token};
 /// Enum of lox's expression.
 #[derive(Debug)]
 pub enum Expr {
+    Assignment {
+        name: Token,
+        value: Box<Expr>,
+    },
     Binary {
         left: Box<Expr>,
         operator: Token,
@@ -23,14 +27,19 @@ pub enum Expr {
         truepart: Box<Expr>,
         falsepart: Box<Expr>,
     },
+    Variable {
+        name: Token,
+    },
 }
 
 pub trait Visitor<T> {
+    fn visit_assignment_expr(&mut self, name: &Token, value: &Expr) -> T;
     fn visit_binary_expr(&mut self, left: &Expr, operator: &Token, right: &Expr) -> T;
     fn visit_grouping(&mut self, expression: &Expr) -> T;
     fn visit_literal(&mut self, value: &LiteralType) -> T;
     fn visit_unary(&mut self, operator: &Token, right: &Expr) -> T;
     fn visit_ternary(&mut self, condition: &Expr, truepart: &Expr, falsepart: &Expr) -> T;
+    fn visit_variable(&mut self, name: &Token) -> T;
 }
 
 impl Expr {
@@ -39,6 +48,7 @@ impl Expr {
         V: Visitor<T>,
     {
         match self {
+            Expr::Assignment { name, value } => visitor.visit_assignment_expr(name, value),
             Expr::Binary {
                 left,
                 operator,
@@ -52,6 +62,7 @@ impl Expr {
                 truepart,
                 falsepart,
             } => visitor.visit_ternary(condition, truepart, falsepart),
+            Expr::Variable { name } => visitor.visit_variable(name),
         }
     }
 }

@@ -5,7 +5,7 @@ use crate::{
     token::{LiteralType, Token, TokenType},
 };
 
-// Lzay init keywords map.
+// Lazy init keywords map.
 static KEYWORDS: LazyLock<HashMap<&str, TokenType>> = LazyLock::new(|| {
     let mut keywords = HashMap::with_capacity(30);
     keywords.insert("and", TokenType::And);
@@ -139,7 +139,7 @@ impl Scanner {
         }
     }
 
-    /// Advacne current index and return current byte.
+    /// Advance current index and return current byte.
     fn advance(&mut self) -> u8 {
         self.current += 1;
         self.source.as_bytes()[self.current - 1]

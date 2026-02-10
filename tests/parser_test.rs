@@ -30,7 +30,7 @@ fn test_parser() {
         let mut scanner = Scanner::new(source.to_string());
         let tokens = scanner.scan_tokens().unwrap();
         let mut parser = Parser::new(tokens);
-        let expr = parser.parse().unwrap();
+        let expr = parser.parse_expr().unwrap();
         assert_eq!(expected, &printer.fmt(&expr));
     });
 }

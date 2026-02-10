@@ -1,5 +1,9 @@
 use crate::{
-    ast::expr::{Expr, Visitor},
+    ast::{
+        expr::{self, Expr},
+        stmt::{self, Stmt},
+    },
+    environment::Environment,
     error::RloxError,
     token::{LiteralType, Token, TokenType},
     value::LoxValue,
@@ -8,26 +12,38 @@ use crate::{
 #[derive(Debug, Default)]
 pub struct Interpreter {
     pub had_error: bool,
+    pub environment: Environment,
 }
 
 impl Interpreter {
     pub fn new() -> Self {
-        Self { had_error: false }
+        Self {
+            had_error: false,
+            environment: Environment::new(),
+        }
     }
 
-    pub fn inperpret(&mut self, program: Expr) -> Option<LoxValue> {
-        match program.accept(self) {
-            Ok(result) => Some(result),
-            Err(e) => {
-                self.had_error = true;
+    pub fn interpret(&mut self, program: Stmt) {
+        self.had_error = false;
+        if let Stmt::Program(_) = program {
+            if let Err(e) = program.accept(self) {
                 eprintln!("{}", e);
-                None
             }
+        } else {
+            println!("Input is not a valid program!");
+            self.had_error = true;
         }
     }
 }
 
-impl Visitor<Result<LoxValue, RloxError>> for Interpreter {
+/// Visitor for expression.
+impl expr::Visitor<Result<LoxValue, RloxError>> for Interpreter {
+    fn visit_assignment_expr(&mut self, name: &Token, value: &Expr) -> Result<LoxValue, RloxError> {
+        let value = value.accept(self)?;
+        self.environment.assign(name, value.clone())?;
+        Ok(value)
+    }
+
     fn visit_literal(&mut self, value: &LiteralType) -> Result<LoxValue, RloxError> {
         Ok(match value {
             LiteralType::String(s) => LoxValue::String(s.clone()),
@@ -154,5 +170,52 @@ impl Visitor<Result<LoxValue, RloxError>> for Interpreter {
                 "invalid ternary expression".to_owned(),
             )),
         }
+    }
+
+    fn visit_variable(&mut self, name: &Token) -> Result<LoxValue, RloxError> {
+        self.environment.get(name)
+    }
+}
+
+/// Visitor for statement.
+impl stmt::Visitor<Result<(), RloxError>> for Interpreter {
+    fn visit_block_stmt(&mut self, statements: &[Stmt]) -> Result<(), RloxError> {
+        self.environment.enter_scope();
+        for stmt in statements {
+            stmt.accept(self)?;
+        }
+        self.environment.exit_scope();
+        Ok(())
+    }
+
+    fn visit_program_stmt(&mut self, declarations: &[Stmt]) -> Result<(), RloxError> {
+        for statement in declarations {
+            statement.accept(self)?;
+        }
+        Ok(())
+    }
+
+    fn visit_var_stmt(
+        &mut self,
+        name: &Token,
+        initializer: &Option<Expr>,
+    ) -> Result<(), RloxError> {
+        let mut value = LoxValue::Nil;
+        if let Some(expr) = initializer {
+            value = expr.accept(self)?;
+        }
+        self.environment.define(&name.lexeme, value);
+        Ok(())
+    }
+
+    fn visit_expression_stmt(&mut self, expression: &Expr) -> Result<(), RloxError> {
+        expression.accept(self)?;
+        Ok(())
+    }
+
+    fn visit_print_stmt(&mut self, expression: &Expr) -> Result<(), RloxError> {
+        let value = expression.accept(self)?;
+        println!("{}", value);
+        Ok(())
     }
 }

@@ -56,10 +56,10 @@ fn test_evaluation() {
         let mut scanner = Scanner::new(input.to_string());
         let tokens = scanner.scan_tokens().unwrap();
         let mut parser = Parser::new(tokens);
-        let program = parser.parse();
+        let program = parser.parse_expr();
         assert!(program.is_some());
-        let evaluated = interpreter.inperpret(program.unwrap());
-        assert!(evaluated.is_some());
+        let evaluated = program.unwrap().accept(&mut interpreter);
+        assert!(evaluated.is_ok());
         assert_eq!(expected, evaluated.unwrap());
     });
 }

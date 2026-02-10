@@ -13,7 +13,7 @@ fn main() -> Result<(), RloxError> {
             // exit with wrong number of arguments.
             std::process::exit(64);
         }
-        Ordering::Equal => run_file(&args[0]),
+        Ordering::Equal => run_file(&args[1]),
         Ordering::Less => run_prompt(),
     }
 }
