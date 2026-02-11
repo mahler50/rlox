@@ -5,3 +5,6 @@ edition = "2024"
 
 [dependencies]
 unescape = "0.1.0"
+
+[dev-dependencies]
+walkdir = "2.5.0"
